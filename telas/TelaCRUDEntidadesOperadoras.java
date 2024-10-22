@@ -15,7 +15,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
 
     private JTextField txtIdentificador;
     private JTextField txtNome;
-    private JTextField txtAutorizadoAcao;
+    private JCheckBox chkAutorizadoAcao;
     private JTextField txtSaldoAcao;
     private JTextField txtSaldoTituloDivida;
 
@@ -81,8 +81,8 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         lblAutorizadoAcao = new JLabel("Autorizado a Ação:*");
         lblAutorizadoAcao.setForeground(new Color(30, 61, 88));
         lblAutorizadoAcao.setFont(montserrat.deriveFont(Font.BOLD, 16f));
-        txtAutorizadoAcao = new JTextField(20);
-
+        chkAutorizadoAcao = new JCheckBox();
+        
         lblSaldoAcao = new JLabel("Creditar no Saldo da Ação:");
         lblSaldoAcao.setForeground(new Color(30, 61, 88));
         lblSaldoAcao.setFont(montserrat.deriveFont(Font.BOLD, 16f));
@@ -95,7 +95,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
 
         addPlaceholder(txtIdentificador, "Digite o identificador");
         addPlaceholder(txtNome, "Digite o nome da ação");
-        addPlaceholder(txtAutorizadoAcao, "Digite se é autorizado a ação");
+        chkAutorizadoAcao.setSelected(false);
         addPlaceholder(txtSaldoAcao, "Digite o saldo a ser creditado");
         addPlaceholder(txtSaldoTituloDivida, "Digite o saldo a ser creditado");
 
@@ -117,7 +117,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         gbc.gridy = 3;
         painelCampos.add(lblAutorizadoAcao, gbc);
         gbc.gridx = 1;
-        painelCampos.add(txtAutorizadoAcao, gbc);
+        painelCampos.add(chkAutorizadoAcao, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -228,10 +228,6 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
     private void salvarEntidadeOperadora() {
         try {
             int identificador = Integer.parseInt(txtIdentificador.getText());
-            String nome = txtNome.getText();
-            boolean autorizadoAcao = Boolean.parseBoolean(txtAutorizadoAcao.getText());
-            double saldoAcao = Double.parseDouble(txtSaldoAcao.getText());
-            double saldoTituloDivida = Double.parseDouble(txtSaldoTituloDivida.getText());
 
             EntidadeOperadora entidadeOperadora = mediatorEntidadeOperadora.buscar(identificador);
             if (entidadeOperadora == null) {
@@ -292,8 +288,8 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         txtNome.setEnabled(nomeVisivel);
         
         lblAutorizadoAcao.setVisible(autorizadoAcao);
-        txtAutorizadoAcao.setVisible(autorizadoAcao);
-        txtAutorizadoAcao.setEnabled(autorizadoAcao);
+        chkAutorizadoAcao.setVisible(autorizadoAcao);
+        chkAutorizadoAcao.setEnabled(autorizadoAcao);
 
         lblSaldoAcao.setVisible(saldoAcao);
         txtSaldoAcao.setVisible(saldoAcao);
@@ -361,7 +357,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
     private void limparCampos() {
         setPlaceholder(txtIdentificador, "Digite o identificador");
         setPlaceholder(txtNome, "Digite o nome da ação");
-        setPlaceholder(txtAutorizadoAcao, "Digite se é autorizado a ação");
+        chkAutorizadoAcao.setSelected(false);
         setPlaceholder(txtSaldoAcao, "Digite o saldo a ser creditado");
         setPlaceholder(txtSaldoTituloDivida, "Digite o saldo a ser creditado");
     }
@@ -402,9 +398,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         try {
             int identificador = Integer.parseInt(txtIdentificador.getText());
             String nome = txtNome.getText();
-            boolean autorizadoAcao = Boolean.parseBoolean(txtAutorizadoAcao.getText());
-            // double saldoAcao = Double.parseDouble(txtSaldoAcao.getText());
-            // double saldoTituloDivida = Double.parseDouble(txtSaldoTituloDivida.getText());
+            boolean autorizadoAcao = chkAutorizadoAcao.isSelected();
 
             EntidadeOperadora entidadeOperadora = new EntidadeOperadora(identificador, nome, autorizadoAcao);
             String resultado = mediatorEntidadeOperadora.incluir(entidadeOperadora);
@@ -424,21 +418,16 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         try {
             int identificador = Integer.parseInt(txtIdentificador.getText());
             String nome = txtNome.getText();
-            boolean autorizadoAcao = Boolean.parseBoolean(txtAutorizadoAcao.getText());
+            boolean autorizadoAcao = chkAutorizadoAcao.isSelected();
             double saldoAcao = Double.parseDouble(txtSaldoAcao.getText());
             double saldoTituloDivida = Double.parseDouble(txtSaldoTituloDivida.getText());
 
             EntidadeOperadora entidadeOperadora = mediatorEntidadeOperadora.buscar(identificador);
             if (entidadeOperadora != null) {
-                System.out.println("cheguei aqui");
-                System.out.println(entidadeOperadora.getSaldoAcao());
                 entidadeOperadora.setNome(nome);
                 entidadeOperadora.setAutorizadoAcao(autorizadoAcao);
                 entidadeOperadora.creditarSaldoAcao(saldoAcao);
                 entidadeOperadora.creditarSaldoTituloDivida(saldoTituloDivida);
-                System.out.println("------------------");
-                System.out.println(entidadeOperadora.getSaldoAcao());
-
                 String resultado = mediatorEntidadeOperadora.alterar(entidadeOperadora);
 
                 if (resultado == null) {
@@ -461,9 +450,6 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
             int identificador = Integer.parseInt(txtIdentificador.getText());
             EntidadeOperadora entidadeOperadora = mediatorEntidadeOperadora.buscar(identificador);
 
-            System.out.println(entidadeOperadora.getSaldoAcao());
-            System.out.println("----------------------------------------");
-
             if (entidadeOperadora != null) {
                 String mensagem = "ID: " + entidadeOperadora.getIdentificador() + "\n" +
                         "Nome: " + entidadeOperadora.getNome() + "\n" +
@@ -474,7 +460,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
                 JOptionPane.showMessageDialog(this, mensagem, "Informações da Entidade Operadora", JOptionPane.INFORMATION_MESSAGE);
                 txtIdentificador.setText(String.valueOf(entidadeOperadora.getIdentificador()));
                 txtNome.setText(entidadeOperadora.getNome());
-                txtAutorizadoAcao.setText(String.valueOf(entidadeOperadora.getAutorizadoAcao()));
+                chkAutorizadoAcao.setText(String.valueOf(entidadeOperadora.getAutorizadoAcao()));
                 txtSaldoAcao.setText(String.valueOf(entidadeOperadora.getSaldoAcao()));
                 txtSaldoTituloDivida.setText(String.valueOf(entidadeOperadora.getSaldoTituloDivida()));
             } else {

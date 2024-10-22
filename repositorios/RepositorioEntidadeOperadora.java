@@ -201,9 +201,10 @@ public class RepositorioEntidadeOperadora {
 				long indentificadorLinha = Long.parseLong(elementos[0]);
 
 				if(identificador == indentificadorLinha){
-               // long identificador, String nome, boolean autorizadoAcao
-					return new EntidadeOperadora(indentificadorLinha, elementos[1], Boolean.parseBoolean(elementos[2]));
-
+               
+					// Se o identificador for encontrado, retornamos um objeto EntidadeOperadora
+					return new EntidadeOperadora(Long.parseLong(elementos[0]), elementos[1], Boolean.parseBoolean(elementos[2]));
+			
 				}
 
 			}
