@@ -203,8 +203,12 @@ public class RepositorioEntidadeOperadora {
 				if(identificador == indentificadorLinha){
                
 					// Se o identificador for encontrado, retornamos um objeto EntidadeOperadora
-					return new EntidadeOperadora(Long.parseLong(elementos[0]), elementos[1], Boolean.parseBoolean(elementos[2]));
-			
+					EntidadeOperadora entidadeOperadora = new EntidadeOperadora(Long.parseLong(elementos[0]), elementos[1], Boolean.parseBoolean(elementos[2]));
+
+					entidadeOperadora.creditarSaldoAcao(Double.parseDouble(elementos[3]));
+					entidadeOperadora.creditarSaldoTituloDivida(Double.parseDouble(elementos[4]));
+
+					return entidadeOperadora;
 				}
 
 			}

@@ -460,7 +460,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
                 JOptionPane.showMessageDialog(this, mensagem, "Informações da Entidade Operadora", JOptionPane.INFORMATION_MESSAGE);
                 txtIdentificador.setText(String.valueOf(entidadeOperadora.getIdentificador()));
                 txtNome.setText(entidadeOperadora.getNome());
-                chkAutorizadoAcao.setText(String.valueOf(entidadeOperadora.getAutorizadoAcao()));
+                chkAutorizadoAcao.setEnabled(false);
                 txtSaldoAcao.setText(String.valueOf(entidadeOperadora.getSaldoAcao()));
                 txtSaldoTituloDivida.setText(String.valueOf(entidadeOperadora.getSaldoTituloDivida()));
             } else {
