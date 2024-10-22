@@ -1,6 +1,7 @@
 package br.com.cesarschool.poo.titulos.telas;
 
 import br.com.cesarschool.poo.titulos.entidades.Acao;
+import br.com.cesarschool.poo.titulos.entidades.TituloDivida;
 import br.com.cesarschool.poo.titulos.mediators.MediatorAcao;
 
 import javax.swing.*;
@@ -13,15 +14,21 @@ public class TelaCRUDAcaoSwing extends JFrame {
 
     private final MediatorAcao mediatorAcao = MediatorAcao.getMediatorAcao();
 
+    private boolean modoAlteracao = false;
+    
     private JTextField txtIdentificador;
     private JTextField txtNome;
     private JTextField txtValorUnitario;
     private JTextField txtDataValidade;
+
     private JPanel painelCampos;
+    
     private JButton btnSalvar;
     private JButton btnExcluirFormulario;
     private JButton btnBuscarFormulario;
+
     private Font montserrat;
+    
     private JLabel lblIdentificador;
     private JLabel lblNome;
     private JLabel lblValorUnitario;
@@ -210,18 +217,21 @@ public class TelaCRUDAcaoSwing extends JFrame {
     private void salvarAcao() {
         try {
             int identificador = Integer.parseInt(txtIdentificador.getText());
-            String nome = txtNome.getText();
-            double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
-            LocalDate dataValidade = LocalDate.parse(txtDataValidade.getText());
-
+            
             Acao acao = mediatorAcao.buscar(identificador);
-            if (acao == null) {
-                // Caso a ação não exista, vamos incluir uma nova
-                incluirAcao();
+            if (modoAlteracao) {
+                if (acao == null) {
+                    JOptionPane.showMessageDialog(this, "Erro: a ação não existe. Não é possível alterar.", "Erro", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    alterarAcao();
+                }
             } else {
-                // Caso a ação já exista, vamos alterá-la
-                alterarAcao();
-            }
+                if (acao == null) {
+                    incluirAcao();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro: a ação já existe. Não é possível incluir.", "Erro", JOptionPane.WARNING_MESSAGE);
+                }
+            } 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar ação: " + ex.getMessage());
         }
@@ -234,6 +244,7 @@ public class TelaCRUDAcaoSwing extends JFrame {
         btnSalvar.setVisible(true);
         btnExcluirFormulario.setVisible(false);
         btnBuscarFormulario.setVisible(false);
+        modoAlteracao = false;
     }
 
     private void exibirFormularioParaAlteracao() {
@@ -243,6 +254,7 @@ public class TelaCRUDAcaoSwing extends JFrame {
         btnSalvar.setVisible(true);
         btnExcluirFormulario.setVisible(false);
         btnBuscarFormulario.setVisible(false);
+        modoAlteracao = true;
     }
 
     private void exibirFormularioParaExclusao() {

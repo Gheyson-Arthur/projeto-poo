@@ -15,6 +15,8 @@ public class TelaCRUDTituloDivida extends JFrame {
 
     private final MediatorTituloDivida mediatorTituloDivida = MediatorTituloDivida.getMediatorTituloDivida();
 
+    private boolean modoAlteracao = false;
+
     private JTextField txtIdentificador;
     private JTextField txtNome;
     private JTextField txtTaxaJuros;
@@ -193,39 +195,45 @@ public class TelaCRUDTituloDivida extends JFrame {
         setVisible(true);
     }
 
-        private void configurarBotao(JButton botao, String caminhoIcone) {
-            botao.setBackground(new Color(30, 61, 88));
-            botao.setForeground(new Color(248, 248, 255));
-            botao.setFont(montserrat);
-            botao.setIcon(new ImageIcon(caminhoIcone)); // Adiciona o ícone
-            botao.setFocusable(false); // Remove o foco visual
-            botao.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    botao.setBackground(new Color(50, 90, 120));
-                }
+    private void configurarBotao(JButton botao, String caminhoIcone) {
+        botao.setBackground(new Color(30, 61, 88));
+        botao.setForeground(new Color(248, 248, 255));
+        botao.setFont(montserrat);
+        botao.setIcon(new ImageIcon(caminhoIcone)); // Adiciona o ícone
+        botao.setFocusable(false); // Remove o foco visual
+        botao.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                botao.setBackground(new Color(50, 90, 120));
+            }
 
-                @Override
-                public void mouseExited(java.awt.event.MouseEvent evt) {
-                    botao.setBackground(new Color(30, 61, 88));
-                }
-            });
-        }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                botao.setBackground(new Color(30, 61, 88));
+            }
+        });
+    }
 
-        private void salvarTitulo() {
+    private void salvarTitulo() {
         try {
             int identificador = Integer.parseInt(txtIdentificador.getText());
-            String nome = txtNome.getText();
-            double taxaJuros = Double.parseDouble(txtTaxaJuros.getText());
-            LocalDate dataValidade = LocalDate.parse(txtDataValidade.getText());
 
-            TituloDivida titulo = new TituloDivida(identificador, nome, dataValidade, taxaJuros);
-            if (titulo == null) {
-                // Caso a ação não exista, vamos incluir uma nova
-                incluirTituloDivida();
+            TituloDivida titulo = mediatorTituloDivida.buscar(identificador);
+            if (modoAlteracao) {
+                // Se for modo de alteração, verifique se o título existe
+                if (titulo == null) {
+                    JOptionPane.showMessageDialog(this, "Erro: o título não existe. Não é possível alterar.", "Erro", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    // Se o título existir, altere-o
+                    alterarTituloDivida();
+                }
             } else {
-                // Caso a ação já exista, vamos alterá-la
-                alterarTituloDivida();
+                // Se for modo de inclusão, inclua o título
+                if (titulo == null) {
+                    incluirTituloDivida();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro: o título já existe. Não é possível incluir.", "Erro", JOptionPane.WARNING_MESSAGE);
+                }
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar título: " + ex.getMessage());
@@ -239,6 +247,7 @@ public class TelaCRUDTituloDivida extends JFrame {
         btnSalvar.setVisible(true);
         btnExcluirFormulario.setVisible(false);
         btnBuscarFormulario.setVisible(false);
+        modoAlteracao = false; // Modo de inclusão
     }
 
     private void exibirFormularioParaAlteracao() {
@@ -248,6 +257,7 @@ public class TelaCRUDTituloDivida extends JFrame {
         btnSalvar.setVisible(true);
         btnExcluirFormulario.setVisible(false);
         btnBuscarFormulario.setVisible(false);
+        modoAlteracao = true; // Modo de alteração
     }
 
     private void exibirFormularioParaExclusao() {

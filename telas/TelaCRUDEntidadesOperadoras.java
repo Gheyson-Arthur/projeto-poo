@@ -13,6 +13,8 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
 
     private final MediatorEntidadeOperadora mediatorEntidadeOperadora = MediatorEntidadeOperadora.getMediatorEntidadeOperadora();
 
+    private boolean modoAlteracao = false;
+
     private JTextField txtIdentificador;
     private JTextField txtNome;
     private JCheckBox chkAutorizadoAcao;
@@ -230,15 +232,21 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
             int identificador = Integer.parseInt(txtIdentificador.getText());
 
             EntidadeOperadora entidadeOperadora = mediatorEntidadeOperadora.buscar(identificador);
-            if (entidadeOperadora == null) {
-                // Caso a entidade operadora não exista, vamos incluir uma nova
-                incluirEntidadeOperadora();
+            if (modoAlteracao) {
+                if (entidadeOperadora == null) {
+                    JOptionPane.showMessageDialog(this, "Erro: a entidade operadora não existe. Não é possível alterar.", "Erro", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    alterarEntidadeOperadora();
+                }
             } else {
-                // Caso a entidade operadora já exista, vamos alterá-la
-                alterarEntidadeOperadora();
+                if (entidadeOperadora == null) {
+                    incluirEntidadeOperadora();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro: a entidade operadora já existe. Não é possível incluir.", "Erro", JOptionPane.WARNING_MESSAGE);
+                }
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar entidade operadora: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao salvar entidade operadora: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -249,6 +257,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         btnSalvar.setVisible(true);
         btnExcluirFormulario.setVisible(false);
         btnBuscarFormulario.setVisible(false);
+        modoAlteracao = false;
     }
 
     private void exibirFormularioParaAlteracao() {
@@ -258,6 +267,7 @@ public class TelaCRUDEntidadesOperadoras extends JFrame {
         btnSalvar.setVisible(true);
         btnExcluirFormulario.setVisible(false);
         btnBuscarFormulario.setVisible(false);
+        modoAlteracao = true;
     }
 
     private void exibirFormularioParaExclusao() {
