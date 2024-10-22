@@ -383,13 +383,13 @@ public class TelaCRUDAcaoSwing extends JFrame {
             String resultado = mediatorAcao.incluir(novaAcao);
 
             if (resultado == null) {
-                JOptionPane.showMessageDialog(this, "Ação incluída com sucesso!");
+                JOptionPane.showMessageDialog(this, "Ação incluída com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 limparCampos();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao incluir ação: " + resultado);
+                JOptionPane.showMessageDialog(this, "Erro ao incluir ação: " + resultado, "Erro", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro nos dados: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro nos dados: " + ex.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -408,16 +408,16 @@ public class TelaCRUDAcaoSwing extends JFrame {
 
                 String resultado = mediatorAcao.alterar(acao);
                 if (resultado == null) {
-                    JOptionPane.showMessageDialog(this, "Ação alterada com sucesso!");
+                    JOptionPane.showMessageDialog(this, "Ação alterada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     limparCampos();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao alterar ação: " + resultado);
+                    JOptionPane.showMessageDialog(this, "Erro ao alterar ação: " + resultado, "Erro", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Ação inexistente.");
+                JOptionPane.showMessageDialog(this, "Ação inexistente.", "Erro", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro nos dados: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro nos dados: " + ex.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -462,7 +462,7 @@ public class TelaCRUDAcaoSwing extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao excluir ação: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
-            restaurarEstiloPadraoPopups(); // Restaurar estilo padrão após o uso
+            restaurarEstiloPadraoPopups();
         }
     }
 
