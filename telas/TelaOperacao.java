@@ -41,55 +41,72 @@ public class TelaOperacao extends JFrame {
     private JButton btnExtrato;
     private JPanel painelFormulario;
 
-    public TelaOperacao() {
-        try {
-            montserrat = Font.createFont(Font.TRUETYPE_FONT, new File("src/br/com/cesarschool/poo/titulos/telas/resources/static/Montserrat-Regular.ttf")).deriveFont(14f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(montserrat);
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            montserrat = new Font("Arial", Font.PLAIN, 14); // Fallback para Arial
-        }
-
-        setTitle("Operação de Transações");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-
-        JPanel painelPrincipal = new JPanel(new GridBagLayout());
-        painelPrincipal.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Botão "Realizar Operação"
-        btnRealizarOperacao = new JButton("Realizar Operação");
-        btnRealizarOperacao.addActionListener(e -> mostrarFormularioOperacao(true));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        painelPrincipal.add(btnRealizarOperacao, gbc);
-
-        // Botão "Extrato"
-        btnExtrato = new JButton("Extrato");
-        btnExtrato.addActionListener(e -> gerarExtrato());
-        gbc.gridy = 1;
-        painelPrincipal.add(btnExtrato, gbc);
-
-        // Painel do Formulário (oculto inicialmente)
-        painelFormulario = criarPainelFormulario();
-        painelFormulario.setVisible(false);
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        painelPrincipal.add(painelFormulario, gbc);
-
-        configurarBotao(btnEnviar, "src/br/com/cesarschool/poo/titulos/telas/resources/checkmark.png");
-        configurarBotao(btnRealizarOperacao, "src/br/com/cesarschool/poo/titulos/telas/resources/setting.png");
-        configurarBotao(btnExtrato, "src/br/com/cesarschool/poo/titulos/telas/resources/folder.png");
-
-        add(painelPrincipal);
-        setVisible(true);
+public TelaOperacao() {
+    try {
+        montserrat = Font.createFont(Font.TRUETYPE_FONT, new File("src/br/com/cesarschool/poo/titulos/telas/resources/static/Montserrat-Regular.ttf")).deriveFont(14f);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(montserrat);
+    } catch (IOException | FontFormatException e) {
+        e.printStackTrace();
+        montserrat = new Font("Arial", Font.PLAIN, 14); // Fallback para Arial
     }
+
+    setTitle("Operação de Transações");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setSize(800, 600);
+    setLocationRelativeTo(null);
+
+    JPanel painelPrincipal = new JPanel(new GridBagLayout());
+    painelPrincipal.setBackground(Color.WHITE);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(15, 15, 15, 15);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    // Botão "Realizar Operação"
+    btnRealizarOperacao = new JButton("Realizar Operação");
+    btnRealizarOperacao.addActionListener(e -> mostrarFormularioOperacao(true));
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    painelPrincipal.add(btnRealizarOperacao, gbc);
+
+    // Botão "Extrato"
+    btnExtrato = new JButton("Extrato");
+    btnExtrato.addActionListener(e -> gerarExtrato());
+    gbc.gridy = 1;
+    painelPrincipal.add(btnExtrato, gbc);
+
+    // Painel do Formulário (oculto inicialmente)
+    painelFormulario = criarPainelFormulario();
+    painelFormulario.setVisible(false);
+    gbc.gridy = 2;
+    gbc.gridwidth = 2;
+    painelPrincipal.add(painelFormulario, gbc);
+
+    // Painel com o botão "Voltar"
+    JPanel painelVoltar = new JPanel();
+    painelVoltar.setBackground(Color.WHITE);
+    JButton btnVoltar = new JButton("Voltar");
+    configurarBotao(btnVoltar, "src/br/com/cesarschool/poo/titulos/telas/resources/back.png");
+    btnVoltar.addActionListener(e -> {
+        new TelaHome();
+        dispose();
+    });
+    painelVoltar.add(btnVoltar);
+
+    // Adiciona o painelVoltar no layout principal, logo abaixo do formulário
+    gbc.gridy = 3;
+    gbc.gridwidth = 2;
+    painelPrincipal.add(painelVoltar, gbc);
+
+    configurarBotao(btnEnviar, "src/br/com/cesarschool/poo/titulos/telas/resources/checkmark.png");
+    configurarBotao(btnRealizarOperacao, "src/br/com/cesarschool/poo/titulos/telas/resources/setting.png");
+    configurarBotao(btnExtrato, "src/br/com/cesarschool/poo/titulos/telas/resources/folder.png");
+
+    add(painelPrincipal);
+    setVisible(true);
+}
+
 
     private JPanel criarPainelFormulario() {
         JPanel painelFormulario = new JPanel(new GridBagLayout());
@@ -201,7 +218,19 @@ public class TelaOperacao extends JFrame {
     }
 
     private void realizarOperacao() {
-        // Lógica para realizar a operação
+        boolean ehAcao = cbTipoOperacao.getSelectedItem().equals("Ação");
+        int idEntidadeCredito = Integer.parseInt(cbEntidadeCredito.getSelectedItem().toString().split(" - ")[0]);
+        int idEntidadeDebito = Integer.parseInt(cbEntidadeDebito.getSelectedItem().toString().split(" - ")[0]);
+        int idAcaoOuTitulo = Integer.parseInt(cbAcaoOuTitulo.getSelectedItem().toString().split(" - ")[0]);
+        double valor = Double.parseDouble(txtValorOperacao.getText());
+
+        String resposta = MediatorOperacao.getMediatorOperacao().realizarOperacao(ehAcao, idEntidadeCredito, idEntidadeDebito, idAcaoOuTitulo, valor);
+
+        if (resposta != "Operação realizada com sucesso") {
+            JOptionPane.showMessageDialog(this, resposta, "Erro", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, resposta, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     private void gerarExtrato() {

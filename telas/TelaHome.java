@@ -109,8 +109,8 @@ public class TelaHome extends JFrame {
         btnTransacoes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Abre a tela de Transações
-                JOptionPane.showMessageDialog(null, "Abrindo Transações");
+                new TelaOperacao();
+                dispose();
             }
         });
 

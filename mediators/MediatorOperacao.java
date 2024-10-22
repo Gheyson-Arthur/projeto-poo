@@ -8,6 +8,7 @@ import br.com.cesarschool.poo.titulos.repositorios.RepositorioTituloDivida;
 import br.com.cesarschool.poo.titulos.repositorios.RepositorioTransacao;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -142,24 +143,24 @@ public class MediatorOperacao {
     public Transacao[] gerarExtrato(int entidade) {
 
         Transacao [] transacaoCredito = repositorioTransacao.buscarPorEntidadeCredora(entidade);
-//        Transacao [] transacaoDebito = repositorioTransacao.buscarPorEntidadeDebito(entidade);
-//
-//        Transacao[] transacoes = new Transacao[transacaoCredito.length + transacaoDebito.length];
-//
-//        // Copia o primeiro array para o novo array
-//        System.arraycopy(transacaoCredito, 0, transacoes, 0, transacaoCredito.length);
-//
-//        // Copia o segundo array para o novo array logo após o primeiro
-//        System.arraycopy(transacaoDebito, 0, transacoes, transacaoCredito.length, transacaoDebito.length);
-//
-//        Arrays.sort(transacoes, new Comparator<Transacao>() {
-//            @Override
-//            public int compare(Transacao t1, Transacao t2) {
-//                // Comparação decrescente: o mais recente vem primeiro
-//                return t2.getDataHoraOperacao().compareTo(t1.getDataHoraOperacao());
-//            }
-//        });
+        Transacao [] transacaoDebito = repositorioTransacao.buscarPorEntidadeDebito(entidade);
 
-        return transacaoCredito;
+       Transacao[] transacoes = new Transacao[transacaoCredito.length + transacaoDebito.length];
+
+       // Copia o primeiro array para o novo array
+       System.arraycopy(transacaoCredito, 0, transacoes, 0, transacaoCredito.length);
+
+       // Copia o segundo array para o novo array logo após o primeiro
+       System.arraycopy(transacaoDebito, 0, transacoes, transacaoCredito.length, transacaoDebito.length);
+
+       Arrays.sort(transacoes, new Comparator<Transacao>() {
+           @Override
+           public int compare(Transacao t1, Transacao t2) {
+               // Comparação decrescente: o mais recente vem primeiro
+               return t2.getDataHoraOperacao().compareTo(t1.getDataHoraOperacao());
+           }
+       });
+
+        return transacoes;
     }
 }

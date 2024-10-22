@@ -21,14 +21,14 @@ public class MainTransacoes {
         Acao acao = new Acao(1, "Compra de Ações", LocalDate.now().plusDays(30), 10.0);
 
         // Criar um título de dívida
-        TituloDivida tituloDivida = new TituloDivida(1, "Título de Dívida", LocalDate.now().plusMonths(6), 5.0);
+        // TituloDivida tituloDivida = new TituloDivida(1, "Título de Dívida", LocalDate.now().plusMonths(6), 5.0);
 
         // Criar uma transação
         Transacao transacao = new Transacao(
                 entidadeCredito,
                 entidadeDebito,
                 acao,
-                tituloDivida,
+                null,
                 100.0, // valor da operação
                 LocalDateTime.now() // data e hora da operação
         );
