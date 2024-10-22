@@ -1,12 +1,15 @@
 package br.com.cesarschool.poo.titulos.telas;
 
 import br.com.cesarschool.poo.titulos.entidades.Acao;
+import br.com.cesarschool.poo.titulos.entidades.Transacao;
 import br.com.cesarschool.poo.titulos.mediators.MediatorAcao;
 import br.com.cesarschool.poo.titulos.mediators.MediatorEntidadeOperadora;
 import br.com.cesarschool.poo.titulos.mediators.MediatorTituloDivida;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -28,13 +31,26 @@ public class TelaOperacao extends JFrame {
     private JComboBox<Object> cbAcaoOuTitulo;
     private JComboBox<Object> cbEntidadeCredito;
     private JComboBox<Object> cbEntidadeDebito;
+
     private JTextField txtValorOperacao;
+
+    private Font montserrat;
+
     private JButton btnRealizarOperacao;
     private JButton btnEnviar;
     private JButton btnExtrato;
     private JPanel painelFormulario;
 
     public TelaOperacao() {
+        try {
+            montserrat = Font.createFont(Font.TRUETYPE_FONT, new File("src/br/com/cesarschool/poo/titulos/telas/resources/static/Montserrat-Regular.ttf")).deriveFont(14f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(montserrat);
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+            montserrat = new Font("Arial", Font.PLAIN, 14); // Fallback para Arial
+        }
+
         setTitle("Operação de Transações");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -48,7 +64,7 @@ public class TelaOperacao extends JFrame {
 
         // Botão "Realizar Operação"
         btnRealizarOperacao = new JButton("Realizar Operação");
-        btnRealizarOperacao.addActionListener(e -> mostrarFormularioOperacao());
+        btnRealizarOperacao.addActionListener(e -> mostrarFormularioOperacao(true));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -56,7 +72,7 @@ public class TelaOperacao extends JFrame {
 
         // Botão "Extrato"
         btnExtrato = new JButton("Extrato");
-//        btnExtrato.addActionListener(e -> gerarExtrato());
+        btnExtrato.addActionListener(e -> gerarExtrato());
         gbc.gridy = 1;
         painelPrincipal.add(btnExtrato, gbc);
 
@@ -67,12 +83,17 @@ public class TelaOperacao extends JFrame {
         gbc.gridwidth = 2;
         painelPrincipal.add(painelFormulario, gbc);
 
+        configurarBotao(btnEnviar, "src/br/com/cesarschool/poo/titulos/telas/resources/checkmark.png");
+        configurarBotao(btnRealizarOperacao, "src/br/com/cesarschool/poo/titulos/telas/resources/setting.png");
+        configurarBotao(btnExtrato, "src/br/com/cesarschool/poo/titulos/telas/resources/folder.png");
+
         add(painelPrincipal);
         setVisible(true);
     }
 
     private JPanel criarPainelFormulario() {
         JPanel painelFormulario = new JPanel(new GridBagLayout());
+        painelFormulario.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -135,8 +156,27 @@ public class TelaOperacao extends JFrame {
         return painelFormulario;
     }
 
-    private void mostrarFormularioOperacao() {
-        painelFormulario.setVisible(true);
+    private void mostrarFormularioOperacao(boolean flag) {
+        painelFormulario.setVisible(flag);
+    }
+
+    private void configurarBotao(JButton botao, String caminhoIcone) {
+        botao.setBackground(new Color(30, 61, 88));
+        botao.setForeground(new Color(248, 248, 255));
+        botao.setFont(montserrat);
+        botao.setIcon(new ImageIcon(caminhoIcone)); // Adiciona o ícone
+        botao.setFocusable(false); // Remove o foco visual
+        botao.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                botao.setBackground(new Color(50, 90, 120));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                botao.setBackground(new Color(30, 61, 88));
+            }
+        });
     }
 
     private void atualizarListaAcaoOuTitulo() {
@@ -164,16 +204,41 @@ public class TelaOperacao extends JFrame {
         // Lógica para realizar a operação
     }
 
-//    private void gerarExtrato() {
-//        String idStr = JOptionPane.showInputDialog(this, "Informe o ID para gerar o extrato:");
-//        try {
-//            int id = Integer.parseInt(idStr);
-//            String extrato = MediatorOperacao.getMediatorOperacao().gerarExtrato(id);
-//            JOptionPane.showMessageDialog(this, extrato, "Extrato", JOptionPane.INFORMATION_MESSAGE);
-//        } catch (NumberFormatException e) {
-//            JOptionPane.showMessageDialog(this, "ID inválido", "Erro", JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
+    private void gerarExtrato() {
+        mostrarFormularioOperacao(false);
+        String idStr = JOptionPane.showInputDialog(this, "Informe o ID para gerar o extrato:");
+
+        try {
+            int id = Integer.parseInt(idStr);
+            Transacao[] transacoes = MediatorOperacao.getMediatorOperacao().gerarExtrato(id);
+
+            if (transacoes != null && transacoes.length > 0) {
+                String[] resposta = new String[transacoes.length];
+                for (int i = 0; i < transacoes.length; i++) {
+                    Transacao transacao = transacoes[i];
+                    boolean verificador = transacao.getAcao() != null;
+
+                    String descricao = "Entidade Crédito: " + transacao.getEntidadeCredito().getIdentificador() + " - " + transacao.getEntidadeCredito().getNome() + "\n"
+                            + "Entidade Débito: " + transacao.getEntidadeDebito().getIdentificador() + " - " + transacao.getEntidadeDebito().getNome() + "\n"
+                            + "Ação/Título: " + (verificador ? transacao.getAcao().getNome() : transacao.getTituloDivida().getNome()) + "\n"
+                            + "Valor da Operação: " + transacao.getValorOperacao() + "\n"
+                            + "Data da Operação: " + transacao.getDataHoraOperacao() + "\n";
+
+                    // Adicionar a descrição no array resposta
+                    resposta[i] = descricao;
+                }
+
+                // Concatenar todas as descrições para exibição
+                String extrato = String.join("\n\n", resposta);
+                JOptionPane.showMessageDialog(this, extrato, "Extrato", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Nenhuma transação encontrada.", "Extrato", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID inválido", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     public static void main(String[] args) {
         new TelaOperacao();
