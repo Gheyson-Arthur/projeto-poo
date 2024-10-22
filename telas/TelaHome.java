@@ -101,7 +101,8 @@ public class TelaHome extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Abre a tela de Entidades Operadoras
-                JOptionPane.showMessageDialog(null, "Abrindo Entidades Operadoras");
+                new TelaCRUDEntidadesOperadoras();
+                dispose();
             }
         });
 
