@@ -173,5 +173,27 @@ public class RepositorioAcao {
 		}
 		return null;
 	}
-}
 
+	public Acao[] listar() {
+        List<Acao> acoes = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Acao.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Assuming each line contains the data for one Acao object
+                // and the data is separated by commas
+                String[] data = line.split(";");
+
+				int indentificadorLinha = Integer.parseInt(data[0]);
+				String nome = data[1];
+				LocalDate dataValidade = LocalDate.parse(data[2]);
+				double valorUnitario = Double.parseDouble(data[3]);
+
+                Acao acao = new Acao(indentificadorLinha, nome, dataValidade, valorUnitario);
+                acoes.add(acao);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return acoes.toArray(new Acao[0]);
+    }
+}

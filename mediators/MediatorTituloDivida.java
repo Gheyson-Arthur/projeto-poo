@@ -1,5 +1,6 @@
 package br.com.cesarschool.poo.titulos.mediators;
 
+import br.com.cesarschool.poo.titulos.entidades.Acao;
 import br.com.cesarschool.poo.titulos.entidades.TituloDivida;
 import br.com.cesarschool.poo.titulos.repositorios.RepositorioTituloDivida;
 
@@ -104,5 +105,9 @@ public class MediatorTituloDivida {
         }
 
         return repositorioTituloDivida.buscar(identificador);
+    }
+
+    public TituloDivida[] listar() {
+        return repositorioTituloDivida.listar();
     }
 }

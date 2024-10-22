@@ -1,7 +1,10 @@
 package br.com.cesarschool.poo.titulos.repositorios;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import br.com.cesarschool.poo.titulos.entidades.Acao;
 import br.com.cesarschool.poo.titulos.entidades.EntidadeOperadora;
 
 /*
@@ -217,4 +220,31 @@ public class RepositorioEntidadeOperadora {
 		}
 		return null;
 	}
+
+	public EntidadeOperadora[] listar() {
+        List<EntidadeOperadora> entidades = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Assuming each line contains the data for one Acao object
+                // and the data is separated by commas
+                String[] data = line.split(";");
+
+				int indentificadorLinha = Integer.parseInt(data[0]);
+				String nome = data[1];
+				boolean autorizadoAcao = Boolean.parseBoolean(data[2]);
+				double saldoAcao = Double.parseDouble(data[3]);
+				double saldoTituloDivida = Double.parseDouble(data[4]);
+
+                EntidadeOperadora entidade = new EntidadeOperadora(indentificadorLinha, nome, autorizadoAcao);
+				entidade.creditarSaldoAcao(saldoAcao);
+				entidade.creditarSaldoTituloDivida(saldoTituloDivida);
+
+                entidades.add(entidade);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return entidades.toArray(new EntidadeOperadora[0]);
+    }
 }

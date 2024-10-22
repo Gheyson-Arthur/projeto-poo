@@ -82,6 +82,10 @@ public class MediatorEntidadeOperadora {
         }
     }
 
+    public EntidadeOperadora[] listar(){
+        return repositorioEntidadeOperadora.listar();
+    }
+
     public EntidadeOperadora buscar(int identificador) {
         if (identificador < 0 || identificador >= 100000) {
             return null;

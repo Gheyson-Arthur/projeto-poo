@@ -2,7 +2,10 @@ package br.com.cesarschool.poo.titulos.repositorios;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import br.com.cesarschool.poo.titulos.entidades.Acao;
 import br.com.cesarschool.poo.titulos.entidades.TituloDivida;
 
 public class RepositorioTituloDivida {
@@ -145,4 +148,27 @@ public class RepositorioTituloDivida {
 		}
 		return null;
 	}
+
+		public TituloDivida[] listar() {
+        List<TituloDivida> titulos = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("TituloDivida.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Assuming each line contains the data for one TituloDivida object
+                // and the data is separated by commas
+                String[] data = line.split(";");
+
+				int indentificadorLinha = Integer.parseInt(data[0]);
+				String nome = data[1];
+				LocalDate dataValidade = LocalDate.parse(data[2]);
+				double valorUnitario = Double.parseDouble(data[3]);
+
+                TituloDivida titulo = new TituloDivida(indentificadorLinha, nome, dataValidade, valorUnitario);
+                titulos.add(titulo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return titulos.toArray(new TituloDivida[0]);
+    }
 }

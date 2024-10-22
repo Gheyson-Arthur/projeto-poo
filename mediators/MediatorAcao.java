@@ -105,4 +105,8 @@ public class MediatorAcao {
 
         return repositorioAcao.buscar(identificador);
     }
+
+    public Acao[] listar() {
+        return repositorioAcao.listar();
+    }
 }

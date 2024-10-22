@@ -11,6 +11,18 @@ public class MainAcao {
         // Criar uma instância do repositório
         RepositorioAcao repositorio = new RepositorioAcao();
 
+        Acao[] array = repositorio.listar();
+
+        for (int i = 0; i < array.length; i++) {
+            // Printar cada ação
+            System.out.println("----------------------------------------------");
+            System.out.println(array[i].getIdentificador());
+            System.out.println(array[i].getNome());
+            System.out.println(array[i].getValorUnitario());
+            System.out.println(array[i].getDataValidade());
+            System.out.println("----------------------------------------------");
+        }
+
         // Incluir novas ações
         Acao acao1 = new Acao(1, "PETROBRAS", LocalDate.of(2024, 12, 12), 30.33);
         Acao acao2 = new Acao(2, "BANCO DO BRASIL", LocalDate.of(2026, 1, 1), 21.21);
